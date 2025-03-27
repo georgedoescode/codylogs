@@ -4,6 +4,9 @@ import { createRandom } from "generative-utils";
 import simplify from "simplify-js";
 import polygonClipping from "polygon-clipping";
 import offsetPolygon from "offset-polygon";
+import { createPoly } from "@georgedoescode/poly";
+
+const ctx = await createPoly();
 
 const random = createRandom();
 
@@ -136,16 +139,49 @@ logs.forEach((l) => {
 
   const points = pointsInPath(path, 50);
 
-  const random = pickRandomItemsInOrder(points, 25);
+  const randomPoints = pickRandomItemsInOrder(points, 25);
 
   svg
-    .polygon(random.map((p) => [p.x, p.y]))
+    .polygon(randomPoints.map((p) => [p.x, p.y]))
     .fill("none")
     .stroke({
       width: 8,
       color: "#000",
       linejoin: "bevel",
     });
+
+  for (let i = 0; i < 5; i++) {
+    try {
+      const p = ctx
+        .polygon(randomPoints.map((p) => [p.x, p.y]))
+        .offset(i * -20);
+      if (p.getArea() < 1000) continue;
+
+      const dasharray = random(0, 1) > 0.85 ? 25 : 100000;
+
+      let path = svg.path(p.getPath()).fill("none").stroke({
+        width: 8,
+        color: "#000",
+        linejoin: "bevel",
+        dasharray: dasharray,
+      });
+
+      if (i === 4) {
+        path.fill("#000");
+      }
+    } catch (e) {}
+  }
+
+  // for (let i = 0; i < 11; i++) {
+  //   const r = p.offset(-20, "round");
+  //   const p = r.getPath();
+
+  //   let pp = svg.path(p).fill("none").stroke("#32160b").fill("#ffb685");
+
+  //   if (i === 10) {
+  //     pp.fill("#f77769");
+  //   }
+  // }
 
   // svg.path(path).fill("none").stroke({
   //   width: 8,

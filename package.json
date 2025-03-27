@@ -13,6 +13,7 @@
     "vite": "^5.4.8"
   },
   "dependencies": {
+    "@georgedoescode/poly": "^0.0.8",
     "@svgdotjs/svg.js": "^3.2.4",
     "generative-utils": "^0.0.4",
     "hobby-curve": "^0.2.1",
